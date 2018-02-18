@@ -1,0 +1,28 @@
+- name: Install dependecies
+  yum:
+    name: "{{ item }}"
+    update_cache: yes
+    state: present
+  with_items:
+    - yum-utils
+    - device-mapper-persistent-data
+    - lvm2
+
+- name: Add docker repository
+  shell: |
+    yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+
+- name: Install docker-ce
+  yum:
+    name: docker-ce
+    update_cache: yes
+    state: present
+  notify: 'restarted docker service'
+
+- name: Added docker group for `whoami`
+  shell: 'usermod -aG docker vagrant'
+
+- name: Install docker-compose
+  shell: |
+    curl -L https://github.com/docker/compose/releases/download/1.18.0/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose
+    chmod +x /usr/local/bin/docker-compose

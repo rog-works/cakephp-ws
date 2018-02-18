@@ -1,0 +1,30 @@
+version: '3'
+services:
+  app:
+    container_name: centos-app
+    image: centos-app:latest
+    build: ./docker/app
+    ports:
+      - 443:443
+    volumes:
+      - ./:/var/www
+      - app-tmp:/var/www/app/tmp
+    links:
+      - db:db
+
+  db:
+    container_name: centos-db
+    image: centos-db:latest
+    build: ./docker/db
+    ports:
+      - 3306:3306
+    volumes:
+      - app-db:/var/lib/mysql
+    environment:
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+
+volumes:
+  app-tmp:
+    driver: local
+  app-db:
+    driver: local
