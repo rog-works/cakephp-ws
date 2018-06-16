@@ -5,10 +5,13 @@ services:
     image: centos-app:latest
     build: ./docker/app
     ports:
-      - 443:443
+      - 10443:443
     volumes:
       - ./:/var/www
       - app-tmp:/var/www/app/tmp
+    environment:
+      - GMAIL_ADDRESS=user@gmail.com
+      - GMAIL_PASSWORD=password
     links:
       - db:db
 

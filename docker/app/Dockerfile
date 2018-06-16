@@ -19,8 +19,9 @@ RUN yum update -y \
       make \
       httpd-${HTTPD_VERSION} \
       mod_ssl \
-#      sendmail \
-#      postfix \
+      postfix \
+      cyrus-sasl-plain \
+      mailx \
  && pecl install xdebug-${XDEBUG_VERSION} \
  && touch /var/log/httpd/access_log \
  && touch /var/log/httpd/error_log \
@@ -33,16 +34,15 @@ RUN yum update -y \
  && mv server.crt /etc/pki/tls/certs/ \
  && mv server.key /etc/pki/tls/private/ \
  && rm -f server.csr \
- && rm -f /etc/httpd/conf.d/ssl.conf
-# && mkdir -p /etc/skel/Maildir/{new,cur,tmp} \
-# && chmod -R 700 /etc/skel/Maildir \
-# && echo -e '2\n' | alternatives --config mta
+ && rm -f /etc/httpd/conf.d/ssl.conf \
+ && ln -sf /usr/share/zoneinfo/Asia/Tokyo /etc/localtime
 
 COPY ./entrypoint.sh /
 COPY ./etc/httpd/conf/httpd.conf /etc/httpd/conf/
 COPY ./etc/httpd/conf.d /etc/httpd/conf.d
 COPY ./etc/php.d/xdebug.ini /etc/php.d/xdebug.ini
 COPY ./etc/php.d/timezone.ini /etc/php.d/timezone.ini
-#COPY ./etc/postfix/main.cf /main.cf
+COPY ./etc/postfix/main.cf /etc/postfix/main.cf
+COPY ./etc/postfix/sasl_passwd /etc/postfix/sasl_passwd
 
 ENTRYPOINT [ "/entrypoint.sh" ]
