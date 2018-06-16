@@ -5,7 +5,7 @@ services:
     image: centos-app:latest
     build: ./docker/app
     ports:
-      - 10443:443
+      - 18081:443
     volumes:
       - ./:/var/www
       - app-tmp:/var/www/app/tmp
